@@ -2,6 +2,11 @@
 
 This example implements the simplest form of asynchronous chat interface interactions that adheres to GDS progressive enhancement principles. It provides a baseline experience that works for all users, with optional JavaScript enhancements.
 
+## Where this pattern as been used
+|Project|Description|
+|-|-|
+|https://github.com/DEFRA/ai-defra-search-core|This project has implemented this pattern using SQS and SSE.|
+
 ## Baseline (Assumption that JavaScript is disabled)
 
 Instead of making users wait in a synchronous request, we decouple the message submission from the response.
