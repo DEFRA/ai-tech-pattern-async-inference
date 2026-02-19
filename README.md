@@ -68,7 +68,3 @@ This eliminates timeout risks, gives users control, and ensures the service rema
 This repository contains several implementation patterns, each building on the core async concept with different levels of sophistication:
 
 - [**Loading Spinner / Typing Animation**](patterns/loading-spinner.md) - The simplest pattern. Baseline: users manually refresh a status page. Enhancement: automatic polling updates the page when ready.
-
-## Examples
-
-The `example/` directory contains working implementations of these patterns:
