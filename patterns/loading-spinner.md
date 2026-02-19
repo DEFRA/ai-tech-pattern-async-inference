@@ -35,7 +35,7 @@ The key is that this enhancement is optional. The service remains fully function
 This pattern aligns with GDS progressive enhancement because the baseline works for everyone - no user is excluded regardless of the status of their JavaScript, assistive technology, or connection quality. The enhancements provide a better experience for users with modern browsers and JavaScript enabled, but they are not required for the service to function. The core loop of submitting a message and receiving a response is decoupled, which is also a much improved architecture choice for handling long-running processes, not just for LLMs but for any operation that may take time to complete. This approach eliminates timeout risks and gives users control over their experience, while still providing a branded, in-page loading indicator that manages expectations effectively.
 
 ## Context / Container Diagram
-![Container Diagram](../context-diagrams/loading-spinner/loading-spinner.png)
+<img src="../context-diagrams/loading-spinner/loading-spinner.png" alt="Container Diagram" width="50%" />
 
 ## Sequence Diagram
 
