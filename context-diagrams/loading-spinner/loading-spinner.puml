@@ -1,0 +1,62 @@
+@startuml BasicAsyncChatContainerDiagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/html5.puml
+!include DEVICONS/nodejs.puml
+!include DEVICONS/mongodb.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram for Async LLM Inference
+
+Person(user, "User", "A user interacting with the chat interface", $sprite="users")
+
+System_Boundary(chat_system, "Async Chat System") {
+    Container(frontend, "Frontend Web Application", "HTML, CSS, JavaScript", "GDS styled chat interface")
+    
+    Container(bff, "Backend for Frontend (BFF)", "Node.js, Hapi.js", "Handles HTTP requests from frontend, manages conversation state, provides SSE endpoint for real-time updates, and coordinates with LLM API.", $sprite="nodejs")
+    
+    Container(agent, "LLM Service", "Python or Node.JS", "Manages LLM inference and background processing.", $sprite="nodejs")
+    
+    ContainerQueue(queue, "Job Queue", "SQS or FastAPI Background Task", "Holds pending chat processing jobs for execution by worker.", $sprite="aws")
+    
+    ContainerDb(db, "Conversation Database", "MongoDB", "Stores conversation history, messages, and processing status (in-progress, complete).", $sprite="mongodb")
+}
+
+System_Ext(bedrock, "Amazon Bedrock", "AWS AI service providing access to foundation models for LLM inference")
+
+Rel(user, frontend, "Submits messages, views conversations", "HTTPS")
+Rel(frontend, bff, "Makes API calls", "HTTPS")
+Rel(bff, frontend, "Returns responses, pushes updates", "HTTPS / SSE")
+
+Rel(bff, agent, "Submits chat requests", "HTTPS POST")
+Rel(agent, bff, "Webhook notification on completion", "HTTPS POST")
+
+BiRel(agent, queue, "Enqueues/dequeues jobs")
+BiRel(agent, db, "Reads/writes conversation status and history", "NoSQL")
+BiRel(agent, bedrock, "LLM Invoke", "AWS SDK / HTTPS")
+
+note right of frontend
+  **Progressive Enhancement:**
+  - Baseline: Manual refresh with loading spinner
+  - Enhanced: Auto-updates via SSE when JS enabled
+end note
+
+note right of bff
+  **Key Responsibilities:**
+  - Accept chat submissions
+  - Provide SSE endpoint for updates
+  - Serve conversation page with status
+end note
+
+note right of agent
+  **Async Processing:**
+  - Returns 202 immediately after queuing
+  - Processes jobs in background
+  - Handles LLM inference and retries
+end note
+
+@enduml
